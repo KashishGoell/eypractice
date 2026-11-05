@@ -45,16 +45,17 @@ for i in range(users):
 sales= show_purchases()
 print(sales)
 
-demand= sales.groupby("Product")["Quantity"].sum()
-print(demand)
+category_demand= sales.groupby("Category")["Quantity"].sum()
+print("\nUnits sold by category:")
+print(category_demand)
 
 revenue=np.sum(sales["Amount"])
 sns.barplot(
-    x=demand.index,
-    y=demand.values
+    x=category_demand.index,
+    y=category_demand.values
 )
 
-plt.xlabel("Products")
+plt.xlabel("Categories")
 plt.ylabel("Quantity sold")
 plt.tight_layout()
 plt.show()
