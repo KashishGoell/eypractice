@@ -45,6 +45,17 @@ for i in range(users):
 sales= show_purchases()
 print(sales)
 
+if sales.empty:
+    print("\nNo customer purchases to summarize.")
+else:
+    customer_history = sales.groupby("User").agg(
+        Orders=("Product", "count"),
+        Items=("Quantity", "sum"),
+        Total_Spent=("Amount", "sum")
+    ).reset_index()
+    print("\nCustomer purchase history:")
+    print(customer_history.to_string(index=False))
+
 demand= sales.groupby("Product")["Quantity"].sum()
 print(demand)
 
