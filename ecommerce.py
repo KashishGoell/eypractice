@@ -45,10 +45,21 @@ for i in range(users):
 sales= show_purchases()
 print(sales)
 
+if sales.empty:
+    print("\nNo sales to include in the report.")
+else:
+    sales_report = sales.groupby("Product", as_index=False).agg(
+        Units_Sold=("Quantity", "sum"),
+        Revenue=("Amount", "sum")
+    ).sort_values("Revenue", ascending=False)
+    print("\nSales report by product:")
+    print(sales_report.to_string(index=False))
+
 demand= sales.groupby("Product")["Quantity"].sum()
 print(demand)
 
 revenue=np.sum(sales["Amount"])
+print(f"Total revenue: ${revenue:,.2f}")
 sns.barplot(
     x=demand.index,
     y=demand.values
