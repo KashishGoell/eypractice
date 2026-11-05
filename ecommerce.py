@@ -10,7 +10,8 @@ products={
     
     'Product':['Mobile Phones','Television','Laptops',
                'Lipstick','Foundation','Nail Paints'],
-    'Prices':[90000,100000,200000,7000,3000,200]
+    'Prices':[90000,100000,200000,7000,3000,200],
+    'Stock':[20,12,8,50,35,100]
 }
 
 df=pd.DataFrame(products)
@@ -18,6 +19,13 @@ df=pd.DataFrame(products)
 purchase = []
 def buy_product(name,id,quantity,df):
     prod=df[df["id"]==id]
+    if prod.empty:
+        raise ValueError("Product ID was not found.")
+    if quantity <= 0:
+        raise ValueError("Quantity must be greater than zero.")
+    if quantity > prod["Stock"].iloc[0]:
+        raise ValueError("Not enough stock available.")
+
     pname=prod["Product"].iloc[0]
     price=prod["Prices"].iloc[0]
     category = prod["category"].iloc[0]
@@ -29,6 +37,7 @@ def buy_product(name,id,quantity,df):
         "Quantity":quantity,
         "Amount":price*quantity
     })
+    df.loc[prod.index[0], "Stock"] -= quantity
     print(name, pname)
 def show_purchases():
     return pd.DataFrame(purchase)
@@ -44,6 +53,8 @@ for i in range(users):
 
 sales= show_purchases()
 print(sales)
+print("\nRemaining inventory:")
+print(df[["Product", "Stock"]].to_string(index=False))
 
 demand= sales.groupby("Product")["Quantity"].sum()
 print(demand)
